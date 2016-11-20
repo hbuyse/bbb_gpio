@@ -1,5 +1,6 @@
 CC       = $(CROSS_COMPILE)gcc
 LD       = $(CROSS_COMPILE)gcc
+AR       = $(CROSS_COMPILE)ar
 
 EXEC      = gpio.out
 
@@ -90,7 +91,7 @@ $(LIB_SHARED): $(OBJ_LIB)
 $(LIB_STATIC): $(OBJ_LIB)
 	@ mkdir -p $(DIR_LIB)
 	@ echo "\t\033[1;35m[AR]\t[$(OPTIM)]\t$@\033[0m"
-	$(VERBOSE) ar crs $@ $^
+	$(VERBOSE) $(AR) crs $@ $^
 
 
 test:
