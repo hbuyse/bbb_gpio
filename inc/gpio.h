@@ -52,4 +52,6 @@ int gpio_fd_open(unsigned int gpio);
 ****************************************************************/
 
 int gpio_fd_close(int fd);
+
+
 #endif          // __GPIO_H__
