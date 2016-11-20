@@ -51,13 +51,6 @@ else ifeq ($(OPTIM),NONE)
 endif
 
 
-# Include librairies directly in the program?
-STATIC  ?= 0
-ifeq ($(STATIC),1)
-	CFLAGS   += -static
-endif
-
-
 # Verbosity
 V            ?= 0
 ifeq ($(V),1)
@@ -150,5 +143,4 @@ help:
 	@ echo ""
 	@ echo "Options available :"
 	@ echo "    OPTIM=NONE|DEBUG|SIZE|SPEED   (dft : DEBUG)"
-	@ echo "    STATIC=0|1                    (dft : 0)"
 	@ echo "    V=0|1                         (dft : 0)"
