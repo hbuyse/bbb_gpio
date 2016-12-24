@@ -29,7 +29,7 @@ $(shell mkdir -p $(DIR_SRC))
 
 
 CFLAGS  += -W -Wall -Wextra -Werror -Wno-unused-function -fmessage-length=0 -D_REENTRANT -D$(DEFINE_TARGET) -I $(DIR_INC)
-LDFLAGS += -lpthread -L $(DIR_LIB) -lbbb
+LDFLAGS += -lpthread -L$(DIR_LIB) -Wl,-rpath=$(DIR_LIB) -lbbb
 
 
 SRC      = $(shell find $(DIR_SRC) -name '*.c' | sort)
