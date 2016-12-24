@@ -156,7 +156,7 @@ unsigned int bbb_gpio_set_direction(bbb_gpio_t *g)
         return (ret);
     }
 
-    switch( g->direction )
+    switch ( g->direction )
     {
         case INPUT:
             err = write(fd, "in", 3);
@@ -176,6 +176,7 @@ unsigned int bbb_gpio_set_direction(bbb_gpio_t *g)
         ret = 4;
         fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
     }
+
 
     // Close the file that handles the unexportation
     if ( close(fd) )
@@ -212,7 +213,7 @@ unsigned int bbb_gpio_set_edge(bbb_gpio_t *g)
         return (ret);
     }
 
-    switch( g->edge )
+    switch ( g->edge )
     {
         case NONE:
             err = write(fd, "none", 4);
@@ -240,6 +241,7 @@ unsigned int bbb_gpio_set_edge(bbb_gpio_t *g)
         ret = 4;
         fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
     }
+
 
     // Close the file that handles the unexportation
     if ( close(fd) )
@@ -276,7 +278,7 @@ unsigned int bbb_gpio_set_value(bbb_gpio_t *g)
         return (ret);
     }
 
-    switch( g->value )
+    switch ( g->value )
     {
         case LOW:
             err = write(fd, "0", 1);
@@ -296,6 +298,7 @@ unsigned int bbb_gpio_set_value(bbb_gpio_t *g)
         ret = 4;
         fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
     }
+
 
     // Close the file that handles the unexportation
     if ( close(fd) )
@@ -360,15 +363,15 @@ unsigned int bbb_gpio_get_value(bbb_gpio_t *g)
     switch ( ch )
     {
         case '0':
-            g->value  = 0;
+            g->value    = 0;
             break;
 
         case '1':
-            g->value  = 1;
+            g->value    = 1;
             break;
 
         default:
-            ret     = 4;
+            ret         = 4;
             fprintf(stderr, "[%s] Value not supported: %c\n", __func__, ch);
     }
 
