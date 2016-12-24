@@ -35,8 +35,8 @@ int main(int        argc __attribute__( (unused) ),
     bbb_gpio_unexport(gpio);
     #endif
 
-    printf("USR0: %d\n", bbb_get_gpio_by_name("EHRPWM2B") );
-    printf("USR0: %d\n", bbb_get_gpio_by_key("P8_13") );
+    printf("EHRPWM2B: %d\n", bbb_get_gpio_by_name("EHRPWM2B") );
+    printf("P8_13   : %d\n", bbb_get_gpio_by_key("P8_13") );
 
     return (0);
 }
