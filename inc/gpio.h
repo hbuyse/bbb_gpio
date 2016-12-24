@@ -1,13 +1,6 @@
 #ifndef __GPIO_H__
 #define __GPIO_H__
 
-#define SYSFS_GPIO_DIR "/sys/class/gpio"
-#define SYSFS_GPIO_EXPORT SYSFS_GPIO_DIR "/export"
-#define SYSFS_GPIO_UNEXPORT SYSFS_GPIO_DIR "/unexport"
-#define SYSFS_GPIO_VALUE SYSFS_GPIO_DIR "/gpio%d/value"
-#define SYSFS_GPIO_DIRECTION SYSFS_GPIO_DIR "/gpio%d/direction"
-#define SYSFS_GPIO_EDGE SYSFS_GPIO_DIR "/gpio%d/edge"
-
 
 typedef enum {
     INPUT   = 0,
@@ -28,8 +21,10 @@ typedef enum {
     BOTH    = 3
 } edge_t;
 
+
 typedef struct bbb_gpio_s {
     unsigned char number;
+    unsigned char exported;
     direction_t direction;
     value_t value;
     edge_t edge;
@@ -39,50 +34,38 @@ typedef struct bbb_gpio_s {
 /****************************************************************
 * bbb_gpio_export
 ****************************************************************/
-unsigned int bbb_gpio_export(unsigned int gpio);
+unsigned int bbb_gpio_export(bbb_gpio_t *g);
 
 
 /****************************************************************
 * bbb_gpio_unexport
 ****************************************************************/
-unsigned int bbb_gpio_unexport(unsigned int gpio);
+unsigned int bbb_gpio_unexport(bbb_gpio_t *g);
 
 
 /****************************************************************
 * bbb_gpio_set_dir
 ****************************************************************/
-unsigned int bbb_gpio_set_direction(unsigned int gpio, unsigned int out_flag);
-
-
-/****************************************************************
-* bbb_gpio_set_value
-****************************************************************/
-unsigned int bbb_gpio_set_value(unsigned int gpio, unsigned int value);
-
-
-/****************************************************************
-* bbb_gpio_get_value
-****************************************************************/
-unsigned int bbb_gpio_get_value(unsigned int gpio, unsigned int *value);
+unsigned int bbb_gpio_set_direction(bbb_gpio_t *g);
 
 
 /****************************************************************
 * bbb_gpio_set_edge
 ****************************************************************/
 
-unsigned int bbb_gpio_set_edge(unsigned int gpio, char *edge);
+unsigned int bbb_gpio_set_edge(bbb_gpio_t *g);
 
 
 /****************************************************************
-* bbb_gpio_fd_open
+* bbb_gpio_set_value
 ****************************************************************/
-unsigned int bbb_gpio_fd_open(unsigned int gpio, int *fd);
+unsigned int bbb_gpio_set_value(bbb_gpio_t *g);
 
 
 /****************************************************************
-* bbb_gpio_fd_close
+* bbb_gpio_get_value
 ****************************************************************/
-unsigned int bbb_gpio_fd_close(int *fd);
+unsigned int bbb_gpio_get_value(bbb_gpio_t *g);
 
 
 #endif          // __GPIO_H__
