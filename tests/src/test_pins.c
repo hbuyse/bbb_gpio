@@ -67,18 +67,6 @@ MU_TEST(test_bbb_is_pin_pwm)
     mu_assert_int_eq(bbb_is_pin_pwm(TOTO_PIN_NUMBER), -1);
 }
 
-#if 0 // Impossible to use since AINX does not have PIN_NUMBER
-MU_TEST(test_bbb_is_pin_ain)
-{
-    mu_assert_int_eq(bbb_is_pin_ain(USR_PIN_NUMBER), 0);
-    mu_assert_int_eq(bbb_is_pin_ain(GPIO_PIN_NUMBER), 0);
-    mu_assert_int_eq(bbb_is_pin_ain(PWM_PIN_NUMBER), 0);
-    mu_assert_int_eq(bbb_is_pin_ain(AIN_PIN_NUMBER), 1);
-    mu_assert_int_eq(bbb_is_pin_ain(VDD_PIN_NUMBER), 0);
-    mu_assert_int_eq(bbb_is_pin_ain(GND_PIN_NUMBER), 0);
-    mu_assert_int_eq(bbb_is_pin_ain(TOTO_PIN_NUMBER), -1);
-}
-#endif
 
 MU_TEST(test_bbb_is_pin_allocated_by_default)
 {

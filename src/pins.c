@@ -168,26 +168,6 @@ unsigned int bbb_is_pin_pwm(const unsigned int gpio)
 }
 
 
-#if 0 // Impossible to use since AINX does not have PIN_NUMBER
-unsigned int bbb_is_pin_ain(const unsigned int gpio)
-{
-    unsigned int     i = 0;
-
-
-    for ( i = 0; i < PINS_TABLE_SIZE; ++i )
-    {
-        // If we found the GPIO's number in the list,
-        if ( pins_table[i].gpio == gpio )
-        {
-            return ( (pins_table[i].ain != -1) ? 1 : 0);
-        }
-    }
-
-    return (-1);
-}
-#endif
-
-
 
 int bbb_is_pin_allocated_by_default(const unsigned int gpio)
 {

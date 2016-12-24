@@ -52,16 +52,6 @@ int bbb_get_gpio_by_key(const char *key);
 unsigned int bbb_is_pin_pwm(const unsigned int gpio);
 
 
-#if 0 // Impossible to use since AINX does not have PIN_NUMBER
-/**
- * @brief Check if the pin is an analog input
- *
- * @param gpio The GPIO's number
- * @return True: 1, false: 0.
- */
-unsigned int bbb_is_pin_ain(const unsigned int gpio);
-#endif
-
 /**
  * @brief Check if the pin is an analog input
  *
