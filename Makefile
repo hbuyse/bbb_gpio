@@ -1,8 +1,8 @@
-CC       = $(CROSS_COMPILE)gcc
-LD       = $(CROSS_COMPILE)gcc
-AR       = $(CROSS_COMPILE)ar
+CC         = $(CROSS_COMPILE)gcc
+LD         = $(CROSS_COMPILE)gcc
+AR         = $(CROSS_COMPILE)ar
 
-EXEC      = gpio.out
+EXEC      = bbb.out
 
 
 TARGET = $(ARCH)
@@ -29,13 +29,13 @@ $(shell mkdir -p $(DIR_SRC))
 
 
 CFLAGS  += -W -Wall -Wextra -Werror -Wno-unused-function -fmessage-length=0 -D_REENTRANT -D$(DEFINE_TARGET) -I $(DIR_INC)
-LDFLAGS += -lpthread
+LDFLAGS += -lpthread -L $(DIR_LIB) -lbbb
 
 
 SRC      = $(shell find $(DIR_SRC) -name '*.c' | sort)
 OBJ      = $(foreach var,$(notdir $(SRC:.c=.o)),$(DIR_OBJ)/$(var))
 OBJ_LIB  = $(filter-out $(DIR_OBJ)/main.o, $(OBJ))
-DEP      = $(shell find . -name '*.d')
+DEP      = $(shell [ -d "$(DIR_DEP)" ] && find $(DIR_DEP) -name '*.d')
 
 
 # Which optimisation?
@@ -63,22 +63,23 @@ endif
 # Look every source files in the directory SRC
 vpath %.c $(DIR_SRC)
 
+.PHONY: lib test
 
-all: $(EXEC) lib
+all: lib $(EXEC)
 
 
 lib: $(LIB_SHARED) $(LIB_STATIC)
 
 
-$(EXEC): $(OBJ)
+$(EXEC):  $(DIR_OBJ)/main.o $(LIB_SHARED) $(LIB_STATIC)
 	@ echo "\t\033[1;35m[LD]\t[$(OPTIM)]\t$@\033[0m"
-	$(VERBOSE) $(LD) $^ -o $@ $(LDFLAGS)
+	$(VERBOSE) $(LD) $< -o $@ $(LDFLAGS)
 
 
 $(LIB_SHARED): $(OBJ_LIB)
 	@ mkdir -p $(DIR_LIB)
 	@ echo "\t\033[1;35m[SO]\t[$(OPTIM)]\t$@\033[0m"
-	$(VERBOSE) $(LD) -shared -o $@ $^  $(LDFLAGS)
+	$(VERBOSE) $(LD) -shared -o $@ $^
 
 
 $(LIB_STATIC): $(OBJ_LIB)
@@ -118,6 +119,7 @@ endif
 
 # clean : clean all objects files
 clean:
+	$(VERBOSE) $(MAKE) -C $(DIR_TESTS) clean
 	$(VERBOSE) [ ! -d "$(DIR_OBJ)" ] || find $(DIR_OBJ) -type f -name '*.o' -delete
 	$(VERBOSE) [ ! -d "$(DIR_PREPRO)" ] || find $(DIR_PREPRO) -type f -name '*.i' -delete
 	$(VERBOSE) [ ! -d "$(DIR_LST)" ] || find $(DIR_LST) -type f -name '*.lst' -delete
@@ -126,6 +128,7 @@ clean:
 # distclean : clean all objects files and the executable
 d: distclean
 distclean: clean
+	$(VERBOSE) $(MAKE) -C $(DIR_TESTS) distclean
 	$(VERBOSE) [ ! -d "$(DIR_DEP)" ] || find $(DIR_DEP) -type f -name '*.d' -delete
 	$(VERBOSE) [ ! -d "$(DIR_LIB)" ] || find $(DIR_LIB) -type f -name '*.so' -delete
 	$(VERBOSE) [ ! -d "$(DIR_LIB)" ] || find $(DIR_LIB) -type f -name '*.a' -delete

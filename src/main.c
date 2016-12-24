@@ -1,16 +1,17 @@
-#include <gpio.h>          // gpio_export, gpio_set_dir, gpio_set_value
 #include <stdlib.h>          // atoi
 #include <unistd.h>          // usleep
 #include <stdio.h>          // printf
 
+#include <gpio.h>          // bbb_gpio_export, bbb_gpio_set_dir, bbb_gpio_set_value
+#include <pins.h>
 
-int main(int        argc,
-         char const *argv[]
+int main(int        argc __attribute__( (unused) ),
+         char const *argv[] __attribute__( (unused) )
          )
 {
+    #if 0
     unsigned char       gpio    = 0;
     unsigned char       i       = 0;
-
 
     if ( argc < 2 )
     {
@@ -21,18 +22,21 @@ int main(int        argc,
 
     gpio = atoi(argv[1]);
 
-    gpio_export(gpio);
-    gpio_set_dir(gpio, 0);
+    bbb_gpio_export(gpio);
+    bbb_gpio_set_direction(gpio, 0);
 
     for ( i = 0; i < 5; ++i )
     {
-        gpio_set_value(gpio, 1);
+        bbb_gpio_set_value(gpio, 1);
         usleep(1000000);
-        gpio_set_value(gpio, 0);
+        bbb_gpio_set_value(gpio, 0);
         usleep(1000000);
     }
+    bbb_gpio_unexport(gpio);
+    #endif
 
-    gpio_unexport(gpio);
+    printf("USR0: %d\n", bbb_get_gpio_by_name("EHRPWM2B") );
+    printf("USR0: %d\n", bbb_get_gpio_by_key("P8_13") );
 
     return (0);
 }

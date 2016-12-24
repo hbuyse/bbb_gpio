@@ -1,161 +1,273 @@
 #include <fcntl.h>          // open, O_WRONLY
 #include <unistd.h>          // close, write
 #include <stdio.h>          // perror, snprintf
-#include <string.h>          // strlen
+#include <string.h>          // strlen, strerror
+#include <errno.h>          // errno
+
+#include <gpio.h>              // SYSFS_GPIO_DIR, SYSFS_GPIO_EXPORT, SYSFS_GPIO_UNEXPORT, SYSFS_GPIO_VALUE,
+                               // SYSFS_GPIO_DIRECTION, SYSFS_GPIO_EDGE
 
 
-#define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define MAX_BUF 64
 
 
-int gpio_export(unsigned int gpio)
+unsigned int bbb_gpio_export(unsigned int gpio)
 {
-    int         fd  = 0;
-    int         len = 0;
-    char        buf[MAX_BUF];
+    unsigned int        ret     = 0;
+    int                 fd      = 0;
+    size_t              len     = 0;
+    char                buf[MAX_BUF];
+    ssize_t             written = 0;
 
 
-    fd  = open(SYSFS_GPIO_DIR "/export", O_WRONLY);
+    // Open the file that handles the exportation
+    fd = open(SYSFS_GPIO_EXPORT, O_WRONLY);
 
-    if ( fd < 0 )
+    if ( fd == -1 )
     {
-        fprintf(stderr, "gpio/export\n");
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
 
-        return (fd);
+        return (ret);
     }
 
-    len = snprintf(buf, sizeof(buf), "%d", gpio);
 
-    if ( write(fd, buf, len) == -1 )
+    // Write the GPIO's number in that file
+    len     = snprintf(buf, sizeof(buf), "%d", gpio);
+    written = write(fd, buf, len);
+
+    if ( written == -1 )
     {
-        fprintf(stderr, "gpio/export\n");
+        ret = 3;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+    }
+    else if ( ( (size_t) written) != len )
+    {
+        ret = 4;
+        fprintf(stderr,
+                "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+                __func__,
+                written,
+                SYSFS_GPIO_DIR "/export",
+                written,
+                len);
     }
 
-    close(fd);
 
-    return (0);
+    // Close the file that handles the exportation
+    if ( close(fd) )
+    {
+        ret = 2;
+        fprintf(stderr,
+                "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+                __func__,
+                written,
+                SYSFS_GPIO_DIR "/export",
+                written,
+                len);
+    }
+
+    return (ret);
 }
 
 
 
-int gpio_unexport(unsigned int gpio)
+unsigned int bbb_gpio_unexport(unsigned int gpio)
 {
-    int         fd  = 0;
-    int         len = 0;
-    char        buf[MAX_BUF];
+    unsigned int        ret     = 0;
+    int                 fd      = 0;
+    size_t              len     = 0;
+    char                buf[MAX_BUF];
+    ssize_t             written = 0;
 
 
-    fd  = open(SYSFS_GPIO_DIR "/unexport", O_WRONLY);
+    // Open the file that handles the unexportation
+    fd = open(SYSFS_GPIO_UNEXPORT, O_WRONLY);
 
-    if ( fd < 0 )
+    if ( fd == -1 )
     {
-        fprintf(stderr, "gpio/export\n");
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
 
-        return (fd);
+        return (ret);
     }
 
-    len = snprintf(buf, sizeof(buf), "%d", gpio);
 
-    if ( write(fd, buf, len) == -1 )
+    // Write the GPIO's number in that file
+    len     = snprintf(buf, sizeof(buf), "%d", gpio);
+    written = write(fd, buf, len);
+
+    if ( written == -1 )
     {
-        fprintf(stderr, "gpio/export\n");
+        ret = 2;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+    }
+    else if ( ( (size_t) written) != len )
+    {
+        ret = 3;
+        fprintf(stderr,
+                "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+                __func__,
+                written,
+                SYSFS_GPIO_DIR "/unexport",
+                written,
+                len);
     }
 
-    close(fd);
 
-    return (0);
+    // Close the file that handles the unexportation
+    if ( close(fd) )
+    {
+        ret = 4;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+    }
+
+    return (ret);
 }
 
 
 
-int gpio_fd_open(unsigned int gpio)
+unsigned int bbb_gpio_fd_open(unsigned int  gpio,
+                              int           *fd
+                              )
 {
-    int         fd = 0;
-    char        buf[MAX_BUF];
+    unsigned int        ret = 0;
+    char                buf[MAX_BUF];
 
 
     snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
 
-    fd = open(buf, O_RDONLY | O_NONBLOCK);
+    *fd = open(buf, O_RDONLY | O_NONBLOCK);
 
-    if ( fd < 0 )
+    if ( *fd < 0 )
     {
-        fprintf(stderr, "gpio/fd_open\n");
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
     }
 
-    return (fd);
+    return (ret);
 }
 
 
 
-int gpio_fd_close(int fd)
+unsigned int bbb_gpio_fd_close(int *fd)
 {
-    return (close(fd) );
+    unsigned int     ret = 0;
+
+
+    // Close the given file descriptor
+    if ( close(*fd) )
+    {
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+    }
+
+    return (ret);
 }
 
 
 
-int gpio_get_value(unsigned int gpio,
-                   unsigned int *value
-                   )
+unsigned int bbb_gpio_get_value(unsigned int    gpio,
+                                unsigned int    *value
+                                )
 {
-    int         fd = 0;
-    char        buf[MAX_BUF];
-    char        ch;
+    unsigned int        ret         = 0;
+    int                 fd          = 0;
+    char                buf[MAX_BUF];
+    char                ch;
+    ssize_t             bytes_read  = 0;
 
 
-    snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR "/gpio%d/value", gpio);
-
-    fd = open(buf, O_RDONLY);
-
-    if ( fd < 0 )
-    {
-        fprintf(stderr, "gpio/get-value\n");
-
-        return (fd);
-    }
-
-    if ( read(fd, &ch, 1) == -1 )
-    {
-        fprintf(stderr, "gpio/get-value\n");
-    }
-    else
-    {
-        if ( ch != '0' )
-        {
-            *value = 1;
-        }
-        else
-        {
-            *value = 0;
-        }
-    }
-
-    close(fd);
-
-    return (0);
-}
+    // Create the path to the file that handle the GPIO's value
+    snprintf(buf, sizeof(buf), SYSFS_GPIO_VALUE, gpio);
 
 
-
-int gpio_set_dir(unsigned int   gpio,
-                 unsigned int   out_flag
-                 )
-{
-    int         fd  = 0;
-    int         err = 0;
-    char        buf[MAX_BUF];
-
-
-    snprintf(buf, sizeof(buf), SYSFS_GPIO_DIR  "/gpio%d/direction", gpio);
-
+    // Open the file that handles the GPIO's value
     fd = open(buf, O_WRONLY);
 
-    if ( fd < 0 )
+    if ( fd == -1 )
     {
-        fprintf(stderr, "gpio/direction\n");
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
 
-        return (fd);
+        return (ret);
+    }
+
+
+    // Read one character in the file (it should be either 0 or 1)
+    bytes_read = read(fd, &ch, 1);
+
+    switch ( bytes_read )
+    {
+        case -1:
+            fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+            break;
+
+        case 0:
+            fprintf(stderr, "[%s] %s is an empty file.\n", __func__, buf);
+            break;
+
+        case 1:
+            break;
+
+        default:
+            ret = 3;
+            fprintf(stderr, "[%s] %s had a unexpected error\n", __func__, buf);
+    }
+
+
+    // Check if the character is either 1 or 0
+    switch ( ch )
+    {
+        case '0':
+            *value  = 0;
+            break;
+
+        case '1':
+            *value  = 1;
+            break;
+
+        default:
+            ret     = 4;
+            fprintf(stderr, "[%s] Value not supported: %c\n", __func__, ch);
+    }
+
+
+    // Close the file that handles the GPIO's value
+    if ( close(fd) )
+    {
+        ret = 2;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+    }
+
+    return (ret);
+}
+
+
+
+unsigned int bbb_gpio_set_direction(unsigned int    gpio,
+                                    unsigned int    out_flag
+                                    )
+{
+    unsigned int        ret = 0;
+    int                 fd  = 0;
+    int                 err = 0;
+    char                buf[MAX_BUF];
+
+
+    // Create the path to the file that handle the GPIO's direction
+    snprintf(buf, sizeof(buf), SYSFS_GPIO_DIRECTION, gpio);
+
+
+    // Open the file that handles the GPIO's direction
+    fd = open(buf, O_WRONLY);
+
+    if ( fd == -1 )
+    {
+        ret = 1;
+        fprintf(stderr, "[%s] %s\n", __func__, strerror(errno) );
+
+        return (ret);
     }
 
     if ( out_flag )
@@ -179,9 +291,9 @@ int gpio_set_dir(unsigned int   gpio,
 
 
 
-int gpio_set_edge(unsigned int  gpio,
-                  char          *edge
-                  )
+unsigned int bbb_gpio_set_edge(unsigned int gpio,
+                               char         *edge
+                               )
 {
     int         fd = 0;
     char        buf[MAX_BUF];
@@ -210,9 +322,9 @@ int gpio_set_edge(unsigned int  gpio,
 
 
 
-int gpio_set_value(unsigned int gpio,
-                   unsigned int value
-                   )
+unsigned int bbb_gpio_set_value(unsigned int    gpio,
+                                unsigned int    value
+                                )
 {
     int         fd  = 0;
     int         err = 0;
