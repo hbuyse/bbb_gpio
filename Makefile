@@ -2,7 +2,7 @@ CC         = $(CROSS_COMPILE)gcc
 LD         = $(CROSS_COMPILE)gcc
 AR         = $(CROSS_COMPILE)ar
 
-EXEC      = bbb.out
+EXEC      = gpio.out
 
 
 TARGET = $(ARCH)
@@ -21,15 +21,15 @@ DIR_LST    = $(DIR_TARGET)/lst
 DIR_TESTS  = ./tests
 
 
-LIB_SHARED = $(DIR_LIB)/lib$(EXEC:.out=.so)
-LIB_STATIC = $(DIR_LIB)/lib$(EXEC:.out=.a)
+LIB_SHARED = $(DIR_LIB)/libbbb$(EXEC:.out=.so)
+LIB_STATIC = $(DIR_LIB)/libbbb$(EXEC:.out=.a)
 
 
 $(shell mkdir -p $(DIR_SRC))
 
 
 CFLAGS  += -W -Wall -Wextra -Werror -Wno-unused-function -fmessage-length=0 -D_REENTRANT -D$(DEFINE_TARGET) -I $(DIR_INC)
-LDFLAGS += -lpthread -L$(DIR_LIB) -Wl,-rpath=$(DIR_LIB) -lbbb
+LDFLAGS += -lpthread -L$(DIR_LIB) -Wl,-rpath=$(DIR_LIB) -lbbbgpio
 
 
 SRC      = $(shell find $(DIR_SRC) -name '*.c' | sort)
