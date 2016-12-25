@@ -51,7 +51,11 @@ unsigned int bbb_gpio_export(bbb_gpio_t *g)
     {
         ret = 4;
         fprintf(stderr,
+#ifdef __ARM__
+                "[%s] Only %d bytes were written in %s (%d on %u bytes).\n",
+#else
                 "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+#endif
                 __func__,
                 written,
                 SYSFS_GPIO_DIR "/export",
@@ -65,7 +69,11 @@ unsigned int bbb_gpio_export(bbb_gpio_t *g)
     {
         ret = 2;
         fprintf(stderr,
+#ifdef __ARM__
+                "[%s] Only %d bytes were written in %s (%d on %u bytes).\n",
+#else
                 "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+#endif
                 __func__,
                 written,
                 SYSFS_GPIO_DIR "/export",
@@ -112,7 +120,11 @@ unsigned int bbb_gpio_unexport(bbb_gpio_t *g)
     {
         ret = 3;
         fprintf(stderr,
+#ifdef __ARM__
+                "[%s] Only %d bytes were written in %s (%d on %u bytes).\n",
+#else
                 "[%s] Only %ld bytes were written in %s (%ld on %lu bytes).\n",
+#endif
                 __func__,
                 written,
                 SYSFS_GPIO_DIR "/unexport",
