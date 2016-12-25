@@ -1,37 +1,40 @@
 
-# Created by https://www.gitignore.io/api/autotools,c,python
+# Created by https://www.gitignore.io/api/autotools,c,python,linux
 
 ### Autotools ###
-/Makefile
-/Makefile.in
+# http://www.gnu.org/software/automake
+
+Makefile.in
+/ar-lib
+/mdate-sh
+/py-compile
+/test-driver
+/ylwrap
+
+# http://www.gnu.org/software/autoconf
+
+/autom4te.cache
+/autoscan.log
+/autoscan-*.log
 /aclocal.m4
-/autom4te.cache/
-/config.*
+/compile
+/config.guess
+/config.h.in
+/config.sub
 /configure
+/configure.scan
 /depcomp
 /install-sh
-/libtool
-/ltmain.sh
-/m4/
 /missing
-/stamp-h?
-.deps/
-.dirstamp
-.libs/
-*.l[ao]
-*~
-*Makefile
-*Makefile.in
-/aclocal.m4
-/autom4te.cache/
-/config.*
-/configure
-/m4/
-/stamp-h?
-.deps/
-.dirstamp
-*.o
-*~
+/stamp-h1
+
+# https://www.gnu.org/software/libtool/
+
+/ltmain.sh
+
+# http://www.gnu.org/software/texinfo
+
+/texinfo.tex
 
 
 ### C ###
@@ -110,6 +113,7 @@ lib64/
 parts/
 sdist/
 var/
+wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -165,6 +169,9 @@ target/
 # celery beat schedule file
 celerybeat-schedule
 
+# dotenv
+.env
+
 # virtualenv
 .venv/
 venv/
@@ -176,3 +183,20 @@ ENV/
 # Rope project settings
 .ropeproject
 
+
+### Linux ###
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+# End of https://www.gitignore.io/api/autotools,c,python,linux
