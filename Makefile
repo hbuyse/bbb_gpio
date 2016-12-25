@@ -28,7 +28,7 @@ LIB_STATIC = $(DIR_LIB)/libbbb$(EXEC:.out=.a)
 $(shell mkdir -p $(DIR_SRC))
 
 
-CFLAGS  += -W -Wall -Wextra -Werror -Wno-unused-function -fmessage-length=0 -D_REENTRANT -D$(DEFINE_TARGET) -I $(DIR_INC)
+CFLAGS  += -W -Wall -Wextra -Wno-unused-function -fmessage-length=0 -D_REENTRANT -D$(DEFINE_TARGET) -I $(DIR_INC)
 LDFLAGS += -lpthread -L$(DIR_LIB) -Wl,-rpath=$(DIR_LIB) -lbbbgpio
 
 
