@@ -1,7 +1,7 @@
 #include <fcntl.h>          // open, O_WRONLY
-#include <unistd.h>          // close, write
-#include <stdio.h>          // perror, snprintf
-#include <string.h>          // strlen, strerror
+#include <unistd.h>          // close, write, ssize_t, size_t
+#include <stdio.h>          // fprintf, snprintf
+#include <string.h>          // strerror
 #include <errno.h>          // errno
 
 #include <gpio.h>           // bbb_gpio_t
