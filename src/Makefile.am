@@ -6,4 +6,5 @@ libbbbgpio_la_LDFLAGS = -version-info 0:1:0
 
 bin_PROGRAMS =  bbb_gpio.out
 bbb_gpio_out_SOURCES = main.c
+bbb_gpio_out_CFLAGS = -W -Wall -Wextra -Wno-unused-function -fmessage-length=0 -D_REENTRANT
 bbb_gpio_out_LDADD = libbbbgpio.la
